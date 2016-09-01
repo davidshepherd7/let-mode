@@ -22,6 +22,13 @@
 ;; Tell names that it's ok to expand things inside these threading macros.
 :functionlike-macros (-->)
 
+(defun revertable-bind (var value)
+  (let ((initial-value (symbol-value var)))
+    (set var value)
+    (lambda ()
+      (when (equal (symbol-value var) value)
+        (set var initial-value)))))
+
 
 ) ; end of namespace
 
