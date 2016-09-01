@@ -1,4 +1,4 @@
-;;; let-mode.el --- Automatically add spaces around operators -*- lexical-binding: t; -*-
+;;; let-mode.el --- Easily set and revert variables in mode enable/disable -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2015 Free Software Foundation, Inc.
 
