@@ -12,7 +12,14 @@
 
     ;; Revert
     (funcall test/lm-test-unset)
-    (should (equal test/lm-test-var 1))))
+    (should (equal test/lm-test-var 1))
+
+    ;; Ignore multiple calls to revert
+    (setq test/lm-test-var 2)
+    (funcall test/lm-test-unset)
+    (should (equal test/lm-test-var 2))
+    ))
+
 
 (ert-deftest revertable-set-set-outside ()
   ""
@@ -26,7 +33,13 @@
 
     ;; Revert should do nothing
     (funcall test/lm-test-unset)
-    (should (equal test/lm-test-var 10))))
+    (should (equal test/lm-test-var 10))
+
+    ;; Ignore multiple calls to revert
+    (setq test/lm-test-var 2)
+    (funcall test/lm-test-unset)
+    (should (equal test/lm-test-var 2))))
+
 
 (ert-deftest revertable-setq-normal-case ()
   ""
@@ -39,6 +52,7 @@
     ;; Revert
     (funcall test/lm-test-unset)
     (should (equal test/lm-test-var 1))))
+
 
 (ert-deftest revertable-setq-multiple ()
   ""

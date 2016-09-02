@@ -28,23 +28,26 @@
   (-revertable-set-helper (list var) (list value)))
 
 (defun -revertable-set-helper (vars values)
-  (let ((initial-values (seq-mapn #'symbol-value vars)))
+  (let ((initial-values (seq-mapn #'symbol-value vars))
+        (revert-done nil))
     (seq-mapn #'set vars values)
     (lambda ()
-      "Revert the variable values set by revertable-set(q)"
-      (seq-mapn
-       (lambda (var value initial)
-         (when (equal (symbol-value var) value)
-           (set var initial)))
-       vars values initial-values))))
+      (when (not revert-done)
+        "Revert the variable values set by revertable-set(q)"
+        (seq-mapn
+         (lambda (var value initial)
+           (when (equal (symbol-value var) value)
+             (set var initial)))
+         vars values initial-values))
+      (setq revert-done t))))
 
-:autoload
-(defmacro revertable-setq (&rest args)
-  "As setq but return a closure to revert the changes"
-  (let* ((pairs (seq-partition args 2))
-         (vars (seq-map #'car pairs))
-         (values (seq-map #'cadr pairs)))
-    `(let-mode--revertable-set-helper ',vars ',values)))
+  :autoload
+  (defmacro revertable-setq (&rest args)
+    "As setq but return a closure to revert the changes"
+    (let* ((pairs (seq-partition args 2))
+           (vars (seq-map #'car pairs))
+           (values (seq-map #'cadr pairs)))
+      `(let-mode--revertable-set-helper ',vars ',values)))
 
 
   
