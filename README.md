@@ -6,7 +6,34 @@ Create emacs minor modes which set variables when activated and unset them when 
 
 # Usage
 
-TODO
+let-mode can be used to define a simple minor mode which temporarily sets a list
+of variables to some values when the mode is enabled and reverts them on
+disable.
+
+For example here is a very simple mode that sets up tabs for indentation in
+various major modes:
+
+    (defvar tabs-mode-reverter
+      #'ignore
+      "Variable to hold function to revert changes made by tabs-mode")
+
+    (define-minor-mode tabs-mode
+      "Test case for let-mode"
+      :global nil
+      (if tabs-mode
+          (setq tabs-mode-reverter
+                (let-mode-revertable-setq
+                 indent-tabs-mode t
+                 tab-width 4
+                 c-basic-offset 4
+                 sgml-basic-offset 4
+                 js-indent-level 4
+                 ;; etc.
+                 ))
+        ;; else
+        (when tabs-mode-reverter
+      (funcall tabs-mode-reverter))))
+
 
 # Changelog
 

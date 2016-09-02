@@ -70,3 +70,46 @@
     (should (equal test/lm-test-var 1))
     (should (equal test/lm-test-another "a"))
     ))
+
+
+(ert-deftest actual-minor-mode ()
+  ""
+  (setq indent-tabs-mode nil)
+  (require 'cc-mode)
+  (require 'sgml-mode)
+  (require 'js)
+
+  (defvar tabs-mode-reverter
+    #'ignore
+    "Variable to hold function to revert changes made by tabs-mode")
+
+  (define-minor-mode tabs-mode
+    "Test case for let-mode"
+    :global nil
+    (if tabs-mode
+        (setq tabs-mode-reverter
+              (let-mode-revertable-setq
+               indent-tabs-mode t
+               tab-width 4
+               c-basic-offset 4
+               sgml-basic-offset 4
+               js-indent-level 4
+               ;; etc.
+               ))
+      ;; else
+      (when tabs-mode-reverter
+        (funcall tabs-mode-reverter))))
+
+
+  (should (not indent-tabs-mode))
+  (should (equal tab-width 8))
+
+  (tabs-mode 1)
+  (should indent-tabs-mode)
+  (should (equal tab-width 4))
+
+  (tabs-mode 0)
+  (should (not indent-tabs-mode))
+  (should (equal tab-width 8))
+
+  )
