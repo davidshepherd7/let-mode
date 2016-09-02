@@ -23,7 +23,7 @@
 :functionlike-macros (-->)
 
 :autoload
-(defun revertable-bind (var value)
+(defun revertable-set (var value)
   (let ((initial-value (symbol-value var)))
     (set var value)
     (lambda ()
