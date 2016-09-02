@@ -8,6 +8,8 @@
 
 (source melpa-stable)
 
+(depends-on "seq")
+
 (development
  (depends-on "names")
  (depends-on "ert-runner")

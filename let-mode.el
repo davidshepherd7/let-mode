@@ -12,7 +12,7 @@
 
 ;;; Code:
 
-(require 'dash)
+(require 'seq)
 (require 'names)
 
 ;; namespacing using names.el:
@@ -24,14 +24,33 @@
 
 :autoload
 (defun revertable-set (var value)
-  (let ((initial-value (symbol-value var)))
-    (set var value)
-    (lambda ()
-      (when (equal (symbol-value var) value)
-        (set var initial-value)))))
+  "As set but return a closure to revert the change"
+  (-revertable-set-helper (list var) (list value)))
 
-
-) ; end of namespace
+(defun -revertable-set-helper (vars values)
+  (let ((initial-values (seq-mapn #'symbol-value vars)))
+    (seq-mapn #'set vars values)
+    (lambda ()
+      "Revert the variable values set by revertable-set(q)"
+      (seq-mapn
+       (lambda (var value initial)
+         (when (equal (symbol-value var) value)
+           (set var initial)))
+       vars values initial-values))))
+
+:autoload
+(defmacro revertable-setq (&rest args)
+  "As setq but return a closure to revert the changes"
+  (let* ((pairs (seq-partition args 2))
+         (vars (seq-map #'car pairs))
+         (values (seq-map #'cadr pairs)))
+    `(let-mode--revertable-set-helper ',vars ',values)))
+
+
+  
+  
+  ) ; end of namespace
+
 
 (provide 'let-mode)
 
