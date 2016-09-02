@@ -32,7 +32,7 @@ various major modes:
                  ))
         ;; else
         (when tabs-mode-reverter
-      (funcall tabs-mode-reverter))))
+          (funcall tabs-mode-reverter))))
 
 
 # Changelog
