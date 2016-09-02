@@ -7,6 +7,7 @@
 (package-file "let-mode.el")
 
 (source melpa-stable)
+(source gnu)
 
 (depends-on "seq")
 
