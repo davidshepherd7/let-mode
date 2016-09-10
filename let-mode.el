@@ -41,18 +41,17 @@
          vars values initial-values))
       (setq revert-done t))))
 
-  :autoload
-  (defmacro revertable-setq (&rest args)
-    "As setq but return a closure to revert the changes"
-    (let* ((pairs (seq-partition args 2))
-           (vars (seq-map #'car pairs))
-           (values (seq-map #'cadr pairs)))
-      `(let-mode--revertable-set-helper ',vars ',values)))
+:autoload
+(defmacro revertable-setq (&rest args)
+  "As setq but return a closure to revert the changes"
+  (let* ((pairs (seq-partition args 2))
+         (vars (seq-map #'car pairs))
+         (values (seq-map #'cadr pairs)))
+    `(let-mode--revertable-set-helper ',vars ',values)))
 
-
-  
-  
-  ) ; end of namespace
+
+
+) ; end of namespace
 
 
 (provide 'let-mode)
