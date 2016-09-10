@@ -13,7 +13,7 @@ disable.
 For example here is a very simple mode that sets up tabs for indentation in
 various major modes:
 
-    (defvar tabs-mode-reverter
+    (defvar tabs-mode-revert-fn
       #'ignore
       "Variable to hold function to revert changes made by tabs-mode")
 
@@ -21,7 +21,7 @@ various major modes:
       "Test case for let-mode"
       :global nil
       (if tabs-mode
-          (setq tabs-mode-reverter
+          (setq tabs-mode-revert-fn
                 (let-mode-revertable-setq
                  indent-tabs-mode t
                  tab-width 4
@@ -31,8 +31,8 @@ various major modes:
                  ;; etc.
                  ))
         ;; else
-        (when tabs-mode-reverter
-          (funcall tabs-mode-reverter))))
+        (when tabs-mode-revert-fn
+          (funcall tabs-mode-revert-fn))))
 
 
 # Changelog

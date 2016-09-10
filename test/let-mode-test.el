@@ -1,98 +1,98 @@
 
 (ert-deftest revertable-set-normal-case ()
   ""
-  (let ((test/lm-test-var 1)
-        (test/lm-test-unset nil))
+  (let ((lm/foo 1)
+        (lm/revert-fn nil))
     ;; Init
-    (should (equal test/lm-test-var 1))
+    (should (equal lm/foo 1))
 
     ;; Set
-    (setq test/lm-test-unset (let-mode-revertable-set 'test/lm-test-var 2))
-    (should (equal test/lm-test-var 2))
+    (setq lm/revert-fn (let-mode-revertable-set 'lm/foo 2))
+    (should (equal lm/foo 2))
 
     ;; Revert
-    (funcall test/lm-test-unset)
-    (should (equal test/lm-test-var 1))
+    (funcall lm/revert-fn)
+    (should (equal lm/foo 1))
 
     ;; Ignore multiple calls to revert
-    (setq test/lm-test-var 2)
-    (funcall test/lm-test-unset)
-    (should (equal test/lm-test-var 2))
+    (setq lm/foo 2)
+    (funcall lm/revert-fn)
+    (should (equal lm/foo 2))
     ))
 
 
 (ert-deftest revertable-set-set-outside ()
   ""
-  (let ((test/lm-test-var 1)
-        (test/lm-test-unset nil))
+  (let ((lm/foo 1)
+        (lm/revert-fn nil))
     ;; Set
-    (setq test/lm-test-unset (let-mode-revertable-set 'test/lm-test-var 2))
+    (setq lm/revert-fn (let-mode-revertable-set 'lm/foo 2))
 
     ;; Something else sets the variable
-    (setq test/lm-test-var 10)
+    (setq lm/foo 10)
 
     ;; Revert should do nothing
-    (funcall test/lm-test-unset)
-    (should (equal test/lm-test-var 10))
+    (funcall lm/revert-fn)
+    (should (equal lm/foo 10))
 
     ;; Ignore multiple calls to revert
-    (setq test/lm-test-var 2)
-    (funcall test/lm-test-unset)
-    (should (equal test/lm-test-var 2))))
+    (setq lm/foo 2)
+    (funcall lm/revert-fn)
+    (should (equal lm/foo 2))))
 
 
 (ert-deftest revertable-setq-normal-case ()
   ""
-  (let ((test/lm-test-var 1)
-        (test/lm-test-unset nil))
+  (let ((lm/foo 1)
+        (lm/revert-fn nil))
     ;; Set
-    (setq test/lm-test-unset (let-mode-revertable-setq test/lm-test-var 2))
-    (should (equal test/lm-test-var 2))
+    (setq lm/revert-fn (let-mode-revertable-setq lm/foo 2))
+    (should (equal lm/foo 2))
 
     ;; Revert
-    (funcall test/lm-test-unset)
-    (should (equal test/lm-test-var 1))))
+    (funcall lm/revert-fn)
+    (should (equal lm/foo 1))))
 
 
 (ert-deftest revertable-setq-multiple ()
   ""
-  (let ((test/lm-test-var 1)
-        (test/lm-test-another "a")
-        (test/lm-test-unset nil))
+  (let ((lm/foo 1)
+        (lm/bar "a")
+        (lm/revert-fn nil))
     ;; Set
-    (setq test/lm-test-unset (let-mode-revertable-setq test/lm-test-var 2
-                                                       test/lm-test-another "b"))
-    (should (equal test/lm-test-var 2))
-    (should (equal test/lm-test-another "b"))
+    (setq lm/revert-fn (let-mode-revertable-setq lm/foo 2
+                                                 lm/bar "b"))
+    (should (equal lm/foo 2))
+    (should (equal lm/bar "b"))
 
     ;; Revert
-    (funcall test/lm-test-unset)
-    (should (equal test/lm-test-var 1))
-    (should (equal test/lm-test-another "a"))
+    (funcall lm/revert-fn)
+    (should (equal lm/foo 1))
+    (should (equal lm/bar "a"))
     ))
 
 (ert-deftest revertable-setq-local ()
   "setq-local should work as setq but only affect the current buffer"
-  (defvar test/lm-test-var 1)
-  (defvar test/lm-test-var-2 "a")
-  (defvar test/lm-test-unset nil)
+  (defvar lm/foo 1)
+  (defvar lm/foo-2 "a")
+  (defvar lm/revert-fn nil)
 
   (with-temp-buffer
-    (setq test/lm-test-unset
-          (let-mode-revertable-setq-local test/lm-test-var 2
-                                          test/lm-test-var-2 "b"))
-    (should (equal test/lm-test-var 2))
-    (should (equal test/lm-test-var-2 "b"))
+    (setq lm/revert-fn
+          (let-mode-revertable-setq-local lm/foo 2
+                                          lm/foo-2 "b"))
+    (should (equal lm/foo 2))
+    (should (equal lm/foo-2 "b"))
 
     ;; Other buffer is unaffected
     (with-temp-buffer
-      (should (equal test/lm-test-var 1))
-      (should (equal test/lm-test-var-2 "a")))
+      (should (equal lm/foo 1))
+      (should (equal lm/foo-2 "a")))
 
     ;; Revert
-    (funcall test/lm-test-unset)
-    (should (equal test/lm-test-var 1))
-    (should (equal test/lm-test-var-2 "a"))))
+    (funcall lm/revert-fn)
+    (should (equal lm/foo 1))
+    (should (equal lm/foo-2 "a"))))
 
 
 (ert-deftest actual-minor-mode ()
@@ -102,7 +102,7 @@
   (require 'sgml-mode)
   (require 'js)
 
-  (defvar tabs-mode-reverter
+  (defvar tabs-mode-revert-fn
     #'ignore
     "Variable to hold function to revert changes made by tabs-mode")
 
@@ -110,7 +110,7 @@
     "Test case for let-mode"
     :global nil
     (if tabs-mode
-        (setq tabs-mode-reverter
+        (setq tabs-mode-revert-fn
               (let-mode-revertable-setq
                indent-tabs-mode t
                tab-width 4
@@ -120,8 +120,8 @@
                ;; etc.
                ))
       ;; else
-      (when tabs-mode-reverter
-        (funcall tabs-mode-reverter))))
+      (when tabs-mode-revert-fn
+        (funcall tabs-mode-revert-fn))))
 
 
   (should (not indent-tabs-mode))
