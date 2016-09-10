@@ -10,8 +10,8 @@ let-mode can be used to define a simple minor mode which temporarily sets a list
 of variables to some values when the mode is enabled and reverts them on
 disable.
 
-For example here is a very simple mode that sets up tabs for indentation in
-various major modes:
+For example here is a very simple local minor mode that sets up tabs for
+indentation in various major modes:
 
     (defvar tabs-mode-revert-fn
       #'ignore
@@ -22,7 +22,7 @@ various major modes:
       :global nil
       (if tabs-mode
           (setq tabs-mode-revert-fn
-                (let-mode-revertable-setq
+                (let-mode-revertable-setq-local
                  indent-tabs-mode t
                  tab-width 4
                  c-basic-offset 4
@@ -33,6 +33,9 @@ various major modes:
         ;; else
         (when tabs-mode-revert-fn
           (funcall tabs-mode-revert-fn))))
+
+To instead create a global minor mode replace `let-mode-revertable-setq-local`
+with `let-mode-revertable-setq`.
 
 
 # Changelog

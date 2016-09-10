@@ -111,7 +111,7 @@
     :global nil
     (if tabs-mode
         (setq tabs-mode-revert-fn
-              (let-mode-revertable-setq
+              (let-mode-revertable-setq-local
                indent-tabs-mode t
                tab-width 4
                c-basic-offset 4
