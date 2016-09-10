@@ -71,6 +71,29 @@
     (should (equal test/lm-test-another "a"))
     ))
 
+(ert-deftest revertable-setq-local ()
+  "setq-local should work as setq but only affect the current buffer"
+  (defvar test/lm-test-var 1)
+  (defvar test/lm-test-var-2 "a")
+  (defvar test/lm-test-unset nil)
+
+  (with-temp-buffer
+    (setq test/lm-test-unset
+          (let-mode-revertable-setq-local test/lm-test-var 2
+                                          test/lm-test-var-2 "b"))
+    (should (equal test/lm-test-var 2))
+    (should (equal test/lm-test-var-2 "b"))
+
+    ;; Other buffer is unaffected
+    (with-temp-buffer
+      (should (equal test/lm-test-var 1))
+      (should (equal test/lm-test-var-2 "a")))
+
+    ;; Revert
+    (funcall test/lm-test-unset)
+    (should (equal test/lm-test-var 1))
+    (should (equal test/lm-test-var-2 "a"))))
+
 
 (ert-deftest actual-minor-mode ()
   ""

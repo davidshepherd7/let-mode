@@ -49,6 +49,18 @@
          (values (seq-map #'cadr pairs)))
     `(let-mode--revertable-set-helper ',vars ',values)))
 
+:autoload
+(defmacro revertable-setq-local (&rest args)
+  "As setq-local but return a closure to revert the changes
+
+Unlike setq-local this macro set any number of variables at once."
+  (let* ((pairs (seq-partition args 2))
+         (vars (seq-map #'car pairs))
+         (values (seq-map #'cadr pairs)))
+    `(progn
+       (seq-map (lambda (v) (make-local-variable v)) ',vars)
+       (let-mode--revertable-set-helper ',vars ',values))))
+
 
 
 ) ; end of namespace
