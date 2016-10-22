@@ -4,7 +4,7 @@
 
 ;; Author: David Shepherd <davidshepherd7@gmail.com>
 ;; Version: 0.1
-;; Package-Requires:
+;; Package-Requires: ((emacs "24") (seq) (names "0.5.4"))
 ;; URL: https://github.com/davidshepherd7/let-mode
 
 ;;; Commentary:

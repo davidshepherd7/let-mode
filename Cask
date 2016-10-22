@@ -9,10 +9,7 @@
 (source melpa-stable)
 (source gnu)
 
-(depends-on "seq")
-
 (development
- (depends-on "names")
  (depends-on "ert-runner")
  (depends-on "ecukes")
  (depends-on "espuds")
