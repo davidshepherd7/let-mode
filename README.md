@@ -21,21 +21,21 @@ indentation in various major modes:
       "Test case for let-mode"
       :global nil
       (if tabs-mode
-          (setq tabs-mode-revert-fn
-                (let-mode-revertable-setq-local
-                 indent-tabs-mode t
-                 tab-width 4
-                 c-basic-offset 4
-                 sgml-basic-offset 4
-                 js-indent-level 4
-                 ;; etc.
-                 ))
+          (setq-local tabs-mode-revert-fn
+                      (let-mode-revertable-set-local
+                       'indent-tabs-mode t
+                       'tab-width 4
+                       'c-basic-offset 4
+                       'sgml-basic-offset 4
+                       'js-indent-level 4
+                       ;; etc.
+                       ))
         ;; else
-        (when tabs-mode-revert-fn
-          (funcall tabs-mode-revert-fn))))
+        (funcall tabs-mode-revert-fn)))
 
-To instead create a global minor mode replace `let-mode-revertable-setq-local`
-with `let-mode-revertable-setq`.
+
+To instead create a global minor mode replace `let-mode-revertable-set-local`
+with `let-mode-revertable-set` and `setq-local` with `setq`.
 
 
 # Changelog

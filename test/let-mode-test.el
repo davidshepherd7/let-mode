@@ -84,7 +84,7 @@
 
 (ert-deftest actual-minor-mode ()
   ""
-  (setq indent-tabs-mode nil)
+  (setq-default indent-tabs-mode nil)
   (require 'cc-mode)
   (require 'sgml-mode)
   (require 'js)
@@ -97,15 +97,15 @@
     "Test case for let-mode"
     :global nil
     (if tabs-mode
-        (setq tabs-mode-revert-fn
-              (let-mode-revertable-set-local
-               'indent-tabs-mode t
-               'tab-width 4
-               'c-basic-offset 4
-               'sgml-basic-offset 4
-               'js-indent-level 4
-               ;; etc.
-               ))
+        (setq-local tabs-mode-revert-fn
+                    (let-mode-revertable-set-local
+                     'indent-tabs-mode t
+                     'tab-width 4
+                     'c-basic-offset 4
+                     'sgml-basic-offset 4
+                     'js-indent-level 4
+                     ;; etc.
+                     ))
       ;; else
       (funcall tabs-mode-revert-fn)))
 
@@ -114,6 +114,18 @@
   (should (equal tab-width 8))
 
   (tabs-mode 1)
+  (should indent-tabs-mode)
+  (should (equal tab-width 4))
+
+  ;; Effects are buffer local
+  (with-temp-buffer
+    (should (not indent-tabs-mode))
+    (should (equal tab-width 8)))
+
+  ;; Disabling mode in another buffer has no effect on the main buffer
+  (with-temp-buffer
+    (tabs-mode 1)
+    (tabs-mode 0))
   (should indent-tabs-mode)
   (should (equal tab-width 4))
 
