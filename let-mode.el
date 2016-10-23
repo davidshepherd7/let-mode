@@ -23,9 +23,20 @@
 :functionlike-macros (-->)
 
 :autoload
-(defun revertable-set (var value)
+(defun revertable-set (&rest args)
   "As set but return a closure to revert the change"
-  (-revertable-set-helper (list var) (list value)))
+  (let* ((pairs (seq-partition args 2))
+         (vars (seq-map #'car pairs))
+         (values (seq-map #'cadr pairs)))
+    (-revertable-set-helper vars values)))
+
+:autoload
+(defun revertable-set-local (&rest args)
+  "As set but return a closure to revert the change"
+  (let* ((pairs (seq-partition args 2))
+         (vars (seq-map #'car pairs))
+         (values (seq-map #'cadr pairs)))
+    (-revertable-set-helper (seq-map #'make-local-variable vars) values)))
 
 (defun -revertable-set-helper (vars values)
   (let ((initial-values (seq-mapn #'symbol-value vars))
@@ -33,7 +44,7 @@
     (seq-mapn #'set vars values)
     (lambda ()
       (when (not revert-done)
-        "Revert the variable values set by revertable-set(q)"
+        "Revert the variable values set by revertable-set"
         (seq-mapn
          (lambda (var value initial)
            (when (equal (symbol-value var) value)
@@ -41,28 +52,6 @@
          vars values initial-values))
       (setq revert-done t))))
 
-:autoload
-(defmacro revertable-setq (&rest args)
-  "As setq but return a closure to revert the changes"
-  (let* ((pairs (seq-partition args 2))
-         (vars (seq-map #'car pairs))
-         (values (seq-map #'cadr pairs)))
-    `(let-mode--revertable-set-helper ',vars ',values)))
-
-:autoload
-(defmacro revertable-setq-local (&rest args)
-  "As setq-local but return a closure to revert the changes
-
-Unlike setq-local this macro set any number of variables at once."
-  (let* ((pairs (seq-partition args 2))
-         (vars (seq-map #'car pairs))
-         (values (seq-map #'cadr pairs)))
-    `(progn
-       (seq-map (lambda (v) (make-local-variable v)) ',vars)
-       (let-mode--revertable-set-helper ',vars ',values))))
-
-
-
 ) ; end of namespace
 
 
